@@ -40,10 +40,19 @@ sealed class D1_arrays<T> : Base_array{
 
     public override void POP(T x) {
         int ind = 0;
+        T[] tmp = new T[n];
+        int j = 0;
         for (int i = 0; i < n; i++) {
-            if (a[i] == x) {
-
+            if (!x.Equals(a[i])) {
+                tmp[j] = a[i];
+                j++;
             }
+        }
+        n = j;
+        capacity = 2 * n + 1;
+        Array.Resize(ref a, capacity);
+        for (int i = 0; i < n; i++) {
+            a[i] = tmp[i];
         }
     }
 
@@ -60,13 +69,6 @@ sealed class D1_arrays<T> : Base_array{
             Console.Write($"{a[i]} ");
         }
         Console.WriteLine();
-    }
-
-
-    static int Compare<T, TResult>(T item1, T item2, Func<T, TResult> projection)
-    {
-        Comparer<TResult> comparer = Comparer<TResult>.Default;
-        return comparer.Compare(projection(item1), projection(item2));
     }
     delegate bool IsEqual(int x);
 }
