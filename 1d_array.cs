@@ -1,5 +1,7 @@
 using System;
-sealed class D1_arrays<T> : Base_array{
+using System.Collections;
+using System.Linq;
+sealed class D1_arrays<T> : Base_array, IComparer{
     private T[] a;
     private int n, capacity;
     private elemenent_gen<T> _element_gen;
@@ -22,7 +24,7 @@ sealed class D1_arrays<T> : Base_array{
         }
     }    
 
-    public override void PUSH(T x) {
+    public void PUSH(T x) {
         if (n < capacity) {
             a[n] = x;
         } else {
@@ -38,7 +40,7 @@ sealed class D1_arrays<T> : Base_array{
         n++;
     }
 
-    public override void POP(T x) {
+    public void POP(T x) {
         int ind = 0;
         T[] tmp = new T[n];
         int j = 0;
@@ -56,6 +58,108 @@ sealed class D1_arrays<T> : Base_array{
         }
     }
 
+    
+    public T[] Take(int ind) {
+        T[] new_array = new T[n];
+        for (int i = ind; i < n; i++) {
+            new_array[i-ind] = a[i];
+        }
+        return new_array;
+    }
+    public T min() {
+        return a.Min(); 
+    }
+
+    public T max() {
+        return a.Max();
+    }
+
+    public void SORT() {
+        Array.Sort(a);
+    }
+    
+    public int CountAmount(Func<T, bool> cond) {
+        T[] newArray = Where(cond);
+        return newArray.Length;
+    }
+
+    public int Amount() {
+        return n;
+    }
+
+    public bool Check_one(Func<T, bool> cond) {
+        T[] newArray = Where(cond);
+        if (newArray.Length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public bool Check_all(Func<T, bool> cond) {
+        T[] newArray = Where(cond);
+        if (newArray.Length == n) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public bool In(T x) {
+        for (int i = 0; i < n; i++) {
+            if (x.Equals(a[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public T first(Func<T, bool> condition) {
+        for (int i = 0; i < n; i++) {
+            if (condition(a[i])) {
+                return a[i];
+            }
+        }
+        return a[n-1];
+    }
+
+    public void ActionForAll(Func<T, T> condition) {
+        for (int i = 0; i < n; i++) {
+            a[i] = condition(a[i]);
+        }
+
+        Print();
+
+    }
+
+    public void Reverse() {
+        for (int i = 0; i < n; i++) {
+            T tmp = a[i];
+            a[i] = a[n-i-1];
+            a[n-i-1] = tmp;
+        }
+    }
+
+    public T[] Where(Func<T, bool> condition)
+    {
+        T[] newArray = new T[a.Length];
+        int count = 0;
+        for (int i = 0; i < newArray.Length; i++)
+        {
+            if (condition(a[i]))
+            {
+                newArray[count] = a[i];
+                count++;
+            }
+        }
+        Array.Resize(ref newArray, count);
+        return newArray;
+    }
+
+    int IComparer.Compare( Object x, Object y )  {
+          return( (new CaseInsensitiveComparer()).Compare( y, x ) );
+      }
+
     public override void Change(bool flag) {
         Console.WriteLine("Массив изменен");
         Create_array(flag);
@@ -70,5 +174,13 @@ sealed class D1_arrays<T> : Base_array{
         }
         Console.WriteLine();
     }
-    delegate bool IsEqual(int x);
+
+    public void ForEachAction(Action<T> action)
+    {
+        for (int i = 0; i < a.Length; i++)
+        {
+            action(a[i]);
+        }
+    }
+    //delegate bool IsEqual(int x);
 }
