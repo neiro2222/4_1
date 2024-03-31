@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
-using System.Linq;
-sealed class D1_arrays<T> : Base_array, IComparer{
+sealed class D1_arrays<T> where T : IComparable<T>{
     private T[] a;
     private int n, capacity;
     private elemenent_gen<T> _element_gen;
@@ -10,7 +9,7 @@ sealed class D1_arrays<T> : Base_array, IComparer{
         Create_array(flag);
     }
 
-    public override void Create_array(bool flag) {
+    public void Create_array(bool flag) {
         Console.WriteLine("Введите размер массива : ");
         n = int.Parse(Console.ReadLine());
         capacity = 2 * n + 1;
@@ -40,7 +39,7 @@ sealed class D1_arrays<T> : Base_array, IComparer{
         n++;
     }
 
-    public void POP(T x) {
+    public void POP_VALUE(T x) {
         int ind = 0;
         T[] tmp = new T[n];
         int j = 0;
@@ -58,6 +57,23 @@ sealed class D1_arrays<T> : Base_array, IComparer{
         }
     }
 
+    public (T, T) Min_Max()
+    {
+        T min = a[0];
+        T max = a[0];
+        for (int i = 1 ; i < n; i++)
+        {
+            if (a[i].CompareTo(min) < 0)
+            {
+                min = a[i];
+            }
+            if (a[i].CompareTo(max) > 0)
+            {
+                max = a[i];
+            }
+        }
+        return (min, max);
+    }
     
     public T[] Take(int ind) {
         T[] new_array = new T[n];
@@ -65,13 +81,6 @@ sealed class D1_arrays<T> : Base_array, IComparer{
             new_array[i-ind] = a[i];
         }
         return new_array;
-    }
-    public T min() {
-        return a.Min(); 
-    }
-
-    public T max() {
-        return a.Max();
     }
 
     public void SORT() {
@@ -114,7 +123,7 @@ sealed class D1_arrays<T> : Base_array, IComparer{
         return false;
     }
 
-    public T first(Func<T, bool> condition) {
+    public T First(Func<T, bool> condition) {
         for (int i = 0; i < n; i++) {
             if (condition(a[i])) {
                 return a[i];
@@ -156,16 +165,12 @@ sealed class D1_arrays<T> : Base_array, IComparer{
         return newArray;
     }
 
-    int IComparer.Compare( Object x, Object y )  {
-          return( (new CaseInsensitiveComparer()).Compare( y, x ) );
-      }
-
-    public override void Change(bool flag) {
+    public void Change(bool flag) {
         Console.WriteLine("Массив изменен");
         Create_array(flag);
     }
     
-    public override void Print() {
+    public void Print() {
         Console.WriteLine("Одномерный массив");
         Console.WriteLine("Выводится размер и содержимое массива : ");
         Console.WriteLine(a.Length);
@@ -175,12 +180,11 @@ sealed class D1_arrays<T> : Base_array, IComparer{
         Console.WriteLine();
     }
 
-    public void ForEachAction(Action<T> action)
+    public void ForEachAction(Func<T, T> action)
     {
         for (int i = 0; i < a.Length; i++)
         {
             action(a[i]);
         }
     }
-    //delegate bool IsEqual(int x);
 }
